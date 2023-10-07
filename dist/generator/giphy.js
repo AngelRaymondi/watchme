@@ -10,7 +10,7 @@ dotenv_1.default.config();
 const { GIPHY_TOKEN } = process.env;
 const giphy = new js_fetch_api_1.GiphyFetch(GIPHY_TOKEN);
 const generate = async (description, comment) => {
-    const query_ = await (0, chatgpt_1.default)(`Hay una publicación de Facebook de Alberto Ruiz Egoavil(Tu profesor).
+    const query_ = await (0, chatgpt_1.default)(`Hay una publicación de Facebook.
   La publicación dice ${description || '[No dice nada]'}.
   Y tu comentario dice ${comment}.
   SOLO ESCRIBE UNA palabra que describa ese comentario junto con el contexto de la publicación.

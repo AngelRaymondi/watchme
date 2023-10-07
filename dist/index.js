@@ -49,7 +49,7 @@ if (!fs_1.default.existsSync(RECORD_PATH))
             });
             write_lr(url_id);
         }
-        await (0, promises_1.setTimeout)(30 * 1000);
+        await (0, promises_1.setTimeout)(30 * 60 * 1000);
         return check();
     };
     check();
