@@ -1,0 +1,34 @@
+{
+  "name": "watch-me",
+  "version": "1.0.0",
+  "description": "Revisa cada publicación de Facebook de un usuario y comentará con IA",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "nodemon src/index.ts"
+  },
+  "keywords": [],
+  "author": "AngelRaymondi",
+  "license": "MIT",
+  "engines": {
+    "node": "18.x"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.32",
+    "@types/cli-color": "^2.0.3",
+    "@types/node": "^20.8.0"
+  },
+  "dependencies": {
+    "@giphy/js-fetch-api": "^5.1.0",
+    "@types/uuid": "^9.0.4",
+    "axios": "^1.5.1",
+    "cheerio": "^1.0.0-rc.12",
+    "cli-color": "^2.0.3",
+    "dotenv": "^16.3.1",
+    "fix-esm": "^1.0.1",
+    "form-data": "^4.0.0",
+    "tesseract.js": "^5.0.0",
+    "translate": "^2.0.2",
+    "uuid": "^9.0.1"
+  }
+}

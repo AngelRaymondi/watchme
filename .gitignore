@@ -1,0 +1,10 @@
+/src/
+/node_modules/
+/.env
+/environment.d.ts
+/tsconfig.json
+/test.jpg
+/test123.jpg
+/tsconfig.json
+/last_record
+/prompt.txt

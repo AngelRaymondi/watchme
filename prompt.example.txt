@@ -1,0 +1,4 @@
+La publicación dice: "#<post_content>"
+Tiene un texto adjunto de otra publicación que dice: "#<repost_content>"
+#<attachment_content>
+OBLIGATORIO: El mensaje no debe pasar de 10 palabras
