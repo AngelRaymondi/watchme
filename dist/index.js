@@ -10,13 +10,14 @@ const cheerio_1 = __importDefault(require("cheerio"));
 const promises_1 = require("timers/promises");
 const all_1 = __importDefault(require("./generator/all"));
 const cli_color_1 = __importDefault(require("cli-color"));
+const express_1 = __importDefault(require("express"));
 dotenv_1.default.config();
 process.on("unhandledRejection", (e) => console.error(e));
 process.on("uncaughtException", (e) => console.error(e));
 process.on("uncaughtExceptionMonitor", (e) => console.error(e));
 const { FACEBOOK_COOKIES, WATCH_FBID } = process.env;
 const RECORD_PATH = "last_record";
-console.log(cli_color_1.default.yellow("🎉 ¡WatchMe se ha iniciado correctamente!"));
+const successfully_started = () => console.log(cli_color_1.default.yellow("🎉 ¡WatchMe se ha iniciado correctamente!"));
 const read_lr = () => fs_1.default.readFileSync(RECORD_PATH).toString();
 const write_lr = (record) => fs_1.default.writeFileSync(RECORD_PATH, record);
 const req_profile = async () => (await axios_1.default.get("https://mbasic.facebook.com/profile.php", {
@@ -36,7 +37,10 @@ const req_profile = async () => (await axios_1.default.get("https://mbasic.faceb
 })).data;
 if (!fs_1.default.existsSync(RECORD_PATH))
     write_lr("");
-(async () => {
+let started = false;
+const start = () => {
+    started = true;
+    successfully_started();
     const check = async () => {
         const $ = cheerio_1.default.load(await req_profile());
         const last_comment_url = new URL($("[id^=u] > footer:nth-child(2) > div:nth-child(2) > a:nth-child(3)").attr("href"), "https://mbasic.facebook.com/");
@@ -58,4 +62,19 @@ if (!fs_1.default.existsSync(RECORD_PATH))
         return check();
     };
     check();
-})();
+};
+if (!process.env.DEV) {
+    const app = (0, express_1.default)();
+    app.get("/", (_req, res) => res.sendStatus(200));
+    app.get("/watchme", (_req, res) => {
+        if (!started)
+            start();
+        res.sendStatus(200);
+    });
+    app.listen(1432, () => {
+        console.log(cli_color_1.default.blackBright("Esperando [GET] /watchme"));
+    });
+}
+else {
+    start();
+}
