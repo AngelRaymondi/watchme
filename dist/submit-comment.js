@@ -44,7 +44,7 @@ const submit = async (post_url, content) => {
     const jazoest = $('[name="jazoest"]').val();
     const send_comment_url = new URL(form_el.attr("action"), post_url).href;
     const comment_data = `fb_dtsg=${encodeURIComponent(fb_dtsg)}&jazoest=${encodeURIComponent(jazoest)}&comment_text=${encodeURIComponent(content)}`;
-    const { data } = await axios_1.default.post(send_comment_url, comment_data, {
+    await axios_1.default.post(send_comment_url, comment_data, {
         headers: {
             Host: "mbasic.facebook.com",
             "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1",
