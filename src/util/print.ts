@@ -8,3 +8,4 @@ const print = (input: string, no_color: boolean = false) =>
   );
 
 export default print;
+

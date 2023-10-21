@@ -25,7 +25,7 @@ jobs:
         run: cd dev && echo "n=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
 
       - name: Compile TypeScript
-        run: cd dev && npm run compile && rm -rfv src/
+        run: cd dev && npm run compile
 
       - name: Checkout main
         uses: actions/checkout@v4
@@ -39,6 +39,8 @@ jobs:
           rm -rfv main/dist
           cp -r dev/* main
           cd main
+          rm -rfv src/
+          rm -rfv tsconfig.json
           rm -rfv .gitignore
           mv main.gitignore .gitignore
           git config user.name AngelRaymondi
