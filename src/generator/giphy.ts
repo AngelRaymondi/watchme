@@ -1,5 +1,4 @@
 import { GiphyFetch } from "@giphy/js-fetch-api";
-import axios from "axios";
 import dotenv from "dotenv";
 import ask from './../util/chatgpt';
 

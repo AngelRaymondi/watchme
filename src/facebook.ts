@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 import cheerio from "cheerio";
 import axios from "axios";
-import image from "./recognition/image";
 
 type AttachmentType =
   | "VideoAttachment"

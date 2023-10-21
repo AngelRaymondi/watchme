@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
-    "build": "npm i --omit=dev"
+    "build": "npm i --omit=dev",
+    "compile": "tsc"
   },
   "keywords": [],
   "author": "AngelRaymondi",
@@ -17,7 +18,8 @@
   "devDependencies": {
     "@types/cheerio": "^0.22.32",
     "@types/cli-color": "^2.0.3",
-    "@types/node": "^20.8.0"
+    "@types/node": "^20.8.0",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "@giphy/js-fetch-api": "^5.1.0",

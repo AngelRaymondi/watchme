@@ -1,5 +1,4 @@
 import axios from "axios";
-import { File } from "buffer";
 import cheerio from 'cheerio';
 import FormData from "form-data";
 

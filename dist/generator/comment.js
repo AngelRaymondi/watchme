@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.generate = void 0;
 const chatgpt_1 = __importDefault(require("./../util/chatgpt"));
 const fs_1 = __importDefault(require("fs"));
-const translate = require("fix-esm").require("translate").default;
 const prompt = (input, repost_text, data) => {
     const prompt = fs_1.default.readFileSync('prompt.txt').toString()
         .replaceAll('#<post_content>', input)

@@ -79,7 +79,7 @@ if (!fs.existsSync(RECORD_PATH)) write_lr("");
     }
 
     // await wait(30 * 1000);
-    await wait(60 * 1000);
+    await wait(30 * 60 * 1000);
     return check();
   };
 

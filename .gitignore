@@ -1,7 +1,1 @@
-/dist/
-/node_modules/
-/.env
-/tsconfig.json
-/last_record
-/prompt.txt
-/src/test.ts
+/src/

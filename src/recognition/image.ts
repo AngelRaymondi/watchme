@@ -1,4 +1,3 @@
-import axios from "axios";
 import { createWorker } from "tesseract.js";
 import captionize from "./captionize";
 
