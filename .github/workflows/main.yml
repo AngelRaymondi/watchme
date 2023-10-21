@@ -18,14 +18,14 @@ jobs:
           path: "dev"
 
       - name: Install dependencies
-        run: cd dev && npm run build:dev
+        run: cd dev && npm i && npm i tsc -g
 
       - name: Get commit name
         id: c_name
         run: cd dev && echo "n=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
 
       - name: Compile TypeScript
-        run: cd dev && npm run compile:gh
+        run: cd dev && tsc
 
       - name: Checkout main
         uses: actions/checkout@v4

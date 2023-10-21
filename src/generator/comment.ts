@@ -1,9 +1,5 @@
-import axios from "axios";
-import * as uuid from "uuid";
 import ask from './../util/chatgpt';
 import fs from 'fs';
-
-const translate = require("fix-esm").require("translate").default;
 
 const prompt = (input: string, repost_text: string, data?: string) => {
   const prompt = fs.readFileSync('prompt.txt').toString()
