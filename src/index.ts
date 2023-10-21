@@ -5,6 +5,7 @@ import cheerio from "cheerio";
 import { setTimeout as wait } from "timers/promises";
 import all from "./generator/all";
 import clc from "cli-color";
+import express from "express";
 
 dotenv.config();
 
@@ -15,7 +16,8 @@ process.on("uncaughtExceptionMonitor", (e) => console.error(e));
 const { FACEBOOK_COOKIES, WATCH_FBID } = process.env;
 const RECORD_PATH = "last_record";
 
-console.log(clc.yellow("🎉 ¡WatchMe se ha iniciado correctamente!"));
+const successfully_started = () =>
+  console.log(clc.yellow("🎉 ¡WatchMe se ha iniciado correctamente!"));
 
 const read_lr = () => fs.readFileSync(RECORD_PATH).toString();
 const write_lr = (record: string) => fs.writeFileSync(RECORD_PATH, record);
@@ -41,7 +43,11 @@ const req_profile = async () =>
 
 if (!fs.existsSync(RECORD_PATH)) write_lr("");
 
-(async () => {
+let started = false;
+
+const start = () => {
+  started = true;
+  successfully_started();
   const check = async () => {
     const $ = cheerio.load(await req_profile());
 
@@ -84,4 +90,21 @@ if (!fs.existsSync(RECORD_PATH)) write_lr("");
   };
 
   check();
-})();
+};
+
+if (!process.env.DEV) {
+  const app = express();
+
+  app.get("/", (_req, res) => res.sendStatus(200));
+  app.get("/watchme", (_req, res) => {
+    if (!started) start();
+
+    res.sendStatus(200);
+  });
+
+  app.listen(1432, () => {
+    console.log(clc.blackBright("Esperando [GET] /watchme"));
+  });
+} else {
+  start();
+}
