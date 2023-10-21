@@ -55,7 +55,7 @@ const submit = async (post_url: string, content: string) => {
     content
   )}`;
 
-  const { data } = await axios.post(send_comment_url, comment_data, {
+  await axios.post(send_comment_url, comment_data, {
     headers: {
       Host: "mbasic.facebook.com",
       "User-Agent":
