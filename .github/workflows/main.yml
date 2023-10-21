@@ -1,0 +1,48 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          clean: false
+          path: "dev"
+
+      - name: Install dependencies
+        run: cd dev && npm run build:dev
+
+      - name: Get commit name
+        id: c_name
+        run: cd dev && echo "n=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+
+      - name: Compile TypeScript
+        run: cd dev && npm run compile:gh
+
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          clean: false
+          path: "main"
+
+      - name: Copy changes and push to main
+        run: |
+          rm -rfv main/dist
+          cp -r dev/* main
+          cd main
+          rm -rfv .gitignore
+          mv main.gitignore .gitignore
+          git config user.name AngelRaymondi
+          git config user.email me@angelrd.com
+          git add .
+          git commit -m "${{ steps.c_name.outputs.n }}"
+          git push origin main
