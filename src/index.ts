@@ -1,6 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
-import fs from "fs";
+import fs, { writeFileSync } from "fs";
 import cheerio from "cheerio";
 import { setTimeout as wait } from "timers/promises";
 import all from "./generator/all";
@@ -13,31 +13,37 @@ process.on("unhandledRejection", (e) => console.error(e));
 process.on("uncaughtException", (e) => console.error(e));
 process.on("uncaughtExceptionMonitor", (e) => console.error(e));
 
-const { FACEBOOK_COOKIES, WATCH_FBID } = process.env;
+const { FACEBOOK_COOKIES, WATCH_FBID, FACEBOOK_USERNAME } = process.env;
 const RECORD_PATH = "last_record";
+
+if(!FACEBOOK_COOKIES || !WATCH_FBID || !FACEBOOK_USERNAME) {
+  console.log(clc.bgRedBright(`❌ Alguna(s) variables de entorno no están configuradas correctamente`))
+  console.log(clc.redBright(`Cerrando el proceso...`));
+}
 
 const successfully_started = () =>
   console.log(clc.yellow("🎉 ¡WatchMe se ha iniciado correctamente!"));
 
 const read_lr = () => fs.readFileSync(RECORD_PATH).toString();
 const write_lr = (record: string) => fs.writeFileSync(RECORD_PATH, record);
+const headers = {
+  Cookie: FACEBOOK_COOKIES,
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/118.0",
+  "Accept-Language": "es-MX,es;q=0.8,en-US;q=0.5,en;q=0.3",
+  "Upgrade-Insecure-Requests": "1",
+  "Sec-Fetch-Dest": "document",
+  "Sec-Fetch-Mode": "navigate",
+  "Sec-Fetch-Site": "none",
+  "Sec-Fetch-User": "?1",
+};
 const req_profile = async () =>
   (
     await axios.get("https://mbasic.facebook.com/profile.php", {
       params: {
         id: WATCH_FBID,
       },
-      headers: {
-        Cookie: FACEBOOK_COOKIES,
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/118.0",
-        "Accept-Language": "es-MX,es;q=0.8,en-US;q=0.5,en;q=0.3",
-        "Upgrade-Insecure-Requests": "1",
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "none",
-        "Sec-Fetch-User": "?1",
-      },
+      headers,
     })
   ).data;
 
@@ -59,34 +65,46 @@ const start = () => {
     );
     const url_id = last_comment_url.searchParams.get("story_fbid");
 
-    if (!read_lr().startsWith(url_id)) {
-      console.log(clc.blue("👁️  Se ha encontrado una nueva publicación"));
-      console.log(clc.blackBright(last_comment_url.href));
+    if (read_lr() !== url_id) {
+      const { data } = await axios.get(last_comment_url.href, { headers });
+      writeFileSync("a", data);
+      const $ = cheerio.load(data);
 
-      all
-        .generate(last_comment_url.href)
-        .then(() =>
-          console.log(
-            clc.greenBright(
-              "✅ ¡Se ha comentado en la publicación correctamente!"
+      const names = $("#add_comment_switcher_placeholder ~ div ~ div h3")
+        .toArray()
+        .map((e) => $(e).text());
+
+      if(names.includes(FACEBOOK_USERNAME)) {
+        write_lr(url_id);
+      } else {
+        console.log(clc.blue("👁️  Se ha encontrado una nueva publicación"));
+        console.log(clc.blackBright(last_comment_url.href));
+
+        all
+          .generate(last_comment_url.href)
+          .then(() =>
+            console.log(
+              clc.greenBright(
+                "✅ ¡Se ha comentado en la publicación correctamente!"
+              )
             )
           )
-        )
-        .catch((e) => {
-          console.error(e);
-          console.error(
-            clc.redBright(
-              "❌ No se ha podido comentar en la publicación por un error inesperado"
-            )
-          );
-        });
+          .catch((e) => {
+            console.error(e);
+            console.error(
+              clc.redBright(
+                "❌ No se ha podido comentar en la publicación por un error inesperado"
+              )
+            );
+          });
 
-      write_lr(url_id);
+        write_lr(url_id);
+      }
+
+      // await wait(30 * 1000);
+      await wait(30 * 60 * 1000);
+      return check();
     }
-
-    // await wait(30 * 1000);
-    await wait(30 * 60 * 1000);
-    return check();
   };
 
   check();
@@ -102,7 +120,7 @@ if (!process.env.DEV) {
     res.sendStatus(200);
   });
 
-  app.listen(1432, () => {
+  app.listen(process.env.PORT || 1432, () => {
     console.log(clc.blackBright("Esperando [GET] /watchme"));
   });
 } else {
